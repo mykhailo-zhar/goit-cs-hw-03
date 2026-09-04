@@ -56,19 +56,19 @@ def seed_db(conn):
 INSERT INTO users(fullname, email)
 VALUES
 (%s, %s);''', 
-        [(fake.name(), fake.email()) for _ in range(4)] + [('Charlie', 'charlie@example.com')] 
+        [(fake.name(), fake.email()) for _ in range(5)] + [('Charlie', 'charlie@example.com')] 
         ),
         ('''
 INSERT INTO status(name)
 VALUES
-(%s);''', [('todo',), ('progress',), ('done',)]),
+(%s);''', [('todo',), ('in progress',), ('done',)]),
         (f'''
 INSERT INTO tasks(title, description, status_id, user_id)
 VALUES
 (%s, %s, %s, %s)
 ''', [
     (fake.name(), 'Description for task 1', 1, 1),
-    (fake.name(), 'Description for task 2', 1, 2),
+    (fake.name(), None, 1, 2),
     (fake.name(), 'Description for task 3', 3, 3),
     (fake.name(), 'Description for task 4', 2, 2),
     (fake.name(), 'Description for task 5', 1, 1),
@@ -89,7 +89,7 @@ def duplicates(conn):
         '''
 INSERT INTO status(name)
 VALUES
-('To Do');  
+('todo');  
 ''',
         '''
 INSERT INTO users(fullname, email)
