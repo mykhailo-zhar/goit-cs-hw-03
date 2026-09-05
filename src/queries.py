@@ -116,7 +116,10 @@ RETURNING id;
         (id,),
     )
     returned_row = cur.fetchone()
-    print(f"Removed user with id: {returned_row[0]} \n")
+    if returned_row:
+        print(f"Removed user with id: {returned_row[0]} \n")
+    else:
+        print("User already has been removed\n")
 
 
 # Знайти користувачів з певною електронною поштою. Використайте SELECT із умовою LIKE для фільтрації за електронною поштою.
@@ -237,10 +240,7 @@ if __name__ == "__main__":
             print('\n Adding new task: "New task" with status Done to Charlie')
             add_task(conn, "New task", "New task description", 6, 3)
             select_incomplete_tasks(conn)
-            try:
-                remove_user(conn, 5)
-            except:
-                print("\nUser already has been removed\n")
+            remove_user(conn, 5)
             select_users_with_example_com(conn)
             update_username(conn, 4, "Lessley")
             count_statuses(conn)
