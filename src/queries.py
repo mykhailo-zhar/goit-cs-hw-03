@@ -117,6 +117,7 @@ RETURNING id;
         (task_id,),
     )
     returned_row = cur.fetchone()
+    conn.commit()
     if returned_row:
         print(f"Removed task with id: {returned_row[0]} \n")
     else:
@@ -245,7 +246,7 @@ if __name__ == "__main__":
             select_all_tasks_with_status(conn, "new")
             update_task_status(conn, 6, 2)
             users_without_tasks(conn)
-            print('\n Adding new task: "New task" with status Done to Charlie')
+            print('\n Adding new task: "New task" with status Complete to Charlie')
             add_task(conn, "New task", "New task description", 6, 3)
             select_incomplete_tasks(conn)
             remove_task(conn, 5)
