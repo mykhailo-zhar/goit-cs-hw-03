@@ -1,4 +1,4 @@
-from db import create_connection
+from .db import create_connection
 
 
 def execute_query(conn, sql, params=None):
@@ -319,7 +319,7 @@ GROUP BY u.id;
     print()
 
 
-if __name__ == "__main__":
+def main():
     with create_connection() as conn:
         if conn is not None:
             select_all_tasks_of_user(conn, 1)
@@ -340,3 +340,7 @@ if __name__ == "__main__":
             count_user_tasks(conn)
         else:
             print("Error! cannot create the database connection.")
+
+
+if __name__ == "__main__":
+    main()

@@ -5,7 +5,7 @@ from faker import Faker
 from pymongo.errors import PyMongoError
 from pymongo.synchronous.database import Database
 
-from db import create_mongo_connection
+from .db import create_mongo_connection
 
 
 def create_cats(db: Database, num=10):
