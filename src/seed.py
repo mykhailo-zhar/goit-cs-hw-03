@@ -52,28 +52,35 @@ CREATE TABLE tasks(
 def seed_db(conn):
     fake = Faker()
     queries = [
-        ('''
+        (
+            """
 INSERT INTO users(fullname, email)
 VALUES
-(%s, %s);''', 
-        [(fake.name(), fake.email()) for _ in range(5)] + [('Charlie', 'charlie@example.com')] 
+(%s, %s);""",
+            [(fake.name(), fake.email()) for _ in range(5)]
+            + [("Charlie", "charlie@example.com")],
         ),
-        ('''
+        (
+            """
 INSERT INTO status(name)
 VALUES
-(%s);''', [('todo',), ('in progress',), ('done',)]),
-        (f'''
+(%s);""",
+            [("todo",), ("in progress",), ("done",)],
+        ),
+        (
+            """
 INSERT INTO tasks(title, description, status_id, user_id)
 VALUES
 (%s, %s, %s, %s)
-''', [
-    (fake.name(), 'Description for task 1', 1, 1),
-    (fake.name(), None, 1, 2),
-    (fake.name(), 'Description for task 3', 3, 3),
-    (fake.name(), 'Description for task 4', 2, 2),
-    (fake.name(), 'Description for task 5', 1, 1),
-    ],
-    )
+""",
+            [
+                (fake.name(), "Description for task 1", 1, 1),
+                (fake.name(), None, 1, 2),
+                (fake.name(), "Description for task 3", 3, 3),
+                (fake.name(), "Description for task 4", 2, 2),
+                (fake.name(), "Description for task 5", 1, 1),
+            ],
+        ),
     ]
     try:
         c = conn.cursor()
@@ -86,16 +93,16 @@ VALUES
 
 def duplicates(conn):
     queries = [
-        '''
+        """
 INSERT INTO status(name)
 VALUES
 ('todo');  
-''',
-        '''
+""",
+        """
 INSERT INTO users(fullname, email)
 VALUES
 ('Alice Smith', 'charlie@example.com');
-    ''',
+    """,
     ]
     c = conn.cursor()
     for query in queries:
