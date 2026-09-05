@@ -1,6 +1,7 @@
 from random import randint, sample
 
 from faker import Faker
+from pymongo.errors import PyMongoError
 from pymongo.synchronous.database import Database
 
 from db import create_mongo_connection
@@ -27,41 +28,59 @@ def create_cats(db: Database, num=10):
     )
 
 
+def pymongo_error_message(e: PyMongoError):
+    return f"Error with executing the query: {e}"
+
+
+def error_decorator(func):
+    def wrapper(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except PyMongoError as e:
+            print(pymongo_error_message(e))
+        finally:
+            print()
+
+    return wrapper
+
+
+@error_decorator
 def get_all_cats(db: Database):
     result = db.cats.find({})
     print("All cats:")
     for el in result:
         print(el)
-    print()
 
 
+@error_decorator
 def find_all_with_name(db, cat_name):
     result = db.cats.find({"name": {"$eq": cat_name}})
     print(f"Cats named {cat_name}:")
     for el in result:
         print(el)
-    print()
 
 
+@error_decorator
 def update_cat_age(db: Database, cat_name, new_age):
     result = db.cats.update_one({"name": cat_name}, {"$set": {"age": new_age}})
     print(f"Updating cats with name: {cat_name} to age {new_age}")
     print(result)
-    print()
 
 
+@error_decorator
 def add_cat_feature(db: Database, cat_name, feature):
     result = db.cats.update_one({"name": cat_name}, {"$push": {"features": feature}})
     print(f"Updating cats with name: {cat_name}. Adding feature: {feature}")
     print(result)
-    print()
 
 
+@error_decorator
 def remove_cat_with_name(db: Database, cat_name):
     print(f"Deleting cat with name {cat_name}")
     db.cats.delete_one({"name": cat_name})
 
 
+@error_decorator
 def remove_all_cats(db: Database):
     print("Removing all cats")
     db.cats.delete_many({})
