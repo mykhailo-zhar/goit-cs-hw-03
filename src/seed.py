@@ -1,14 +1,13 @@
 from faker import Faker
 from psycopg2 import Error
 
-from db import create_connection
+from .db import create_connection
 
 
 def create_tables(conn):
-    """create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
+    """Drop existing tables and recreate users, status, and tasks.
+
+    :param conn: PostgreSQL connection object
     """
 
     queries = [
@@ -50,6 +49,10 @@ CREATE TABLE tasks(
 
 
 def seed_db(conn):
+    """Fill users, status, and tasks with Faker-generated sample data.
+
+    :param conn: PostgreSQL connection object
+    """
     fake = Faker()
     queries = [
         (
@@ -65,7 +68,7 @@ VALUES
 INSERT INTO status(name)
 VALUES
 (%s);""",
-            [("todo",), ("in progress",), ("done",)],
+            [("new",), ("in progress",), ("completed",)],
         ),
         (
             """
@@ -92,11 +95,15 @@ VALUES
 
 
 def duplicates(conn):
+    """Attempt duplicate inserts to show UNIQUE constraints on email and name.
+
+    :param conn: PostgreSQL connection object
+    """
     queries = [
         """
 INSERT INTO status(name)
 VALUES
-('todo');  
+('new');  
 """,
         """
 INSERT INTO users(fullname, email)
@@ -115,6 +122,7 @@ VALUES
 
 
 def main():
+    """Create the task-manager schema, seed it, and demonstrate uniqueness."""
     with create_connection() as conn:
         if conn is not None:
             create_tables(conn)

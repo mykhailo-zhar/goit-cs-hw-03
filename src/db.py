@@ -8,6 +8,10 @@ from pymongo.server_api import ServerApi
 
 @contextmanager
 def create_connection():
+    """Yield a PostgreSQL connection and roll it back when the block ends.
+
+    Connection parameters come from POSTGRES_PASSWORD and POSTGRES_PORT.
+    """
     conn = psycopg2.connect(
         dbname="sample",
         user="postgres",
@@ -22,6 +26,11 @@ def create_connection():
 
 
 def create_mongo_connection():
+    """Create a MongoDB client and return the cats database.
+
+    Credentials are read from MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST,
+    and MONGODB_APPNAME.
+    """
     client = MongoClient(
         "mongodb+srv://{username}:{password}@{host}?appName={db}&retryWrites=true&w=majority".format(
             username=os.environ.get("MONGODB_USER"),
