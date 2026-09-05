@@ -65,7 +65,7 @@ VALUES
 INSERT INTO status(name)
 VALUES
 (%s);""",
-            [("todo",), ("in progress",), ("done",)],
+            [("new",), ("in progress",), ("completed",)],
         ),
         (
             """
@@ -96,7 +96,7 @@ def duplicates(conn):
         """
 INSERT INTO status(name)
 VALUES
-('todo');  
+('new');  
 """,
         """
 INSERT INTO users(fullname, email)
