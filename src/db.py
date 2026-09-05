@@ -2,6 +2,8 @@ import os
 from contextlib import contextmanager
 
 import psycopg2
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
 
 @contextmanager
@@ -17,3 +19,17 @@ def create_connection():
     yield conn
     conn.rollback()
     conn.close()
+
+
+def create_mongo_connection():
+    client = MongoClient(
+        "mongodb+srv://{username}:{password}@{host}?appName={db}&retryWrites=true&w=majority".format(
+            username=os.environ.get("MONGODB_USER"),
+            password=os.environ.get("MONGODB_PASSWORD"),
+            host=os.environ.get("MONGODB_HOST"),
+            db=os.environ.get("MONGODB_APPNAME"),
+        ),
+        server_api=ServerApi("1"),
+    )
+    db = client.cats
+    return db
