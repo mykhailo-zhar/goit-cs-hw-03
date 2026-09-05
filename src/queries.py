@@ -324,7 +324,7 @@ def main():
         if conn is not None:
             select_all_tasks_of_user(conn, 1)
             select_all_tasks_with_status(conn, "new")
-            update_task_status(conn, 6, 2)
+            update_task_status(conn, 3, 2)
             users_without_tasks(conn)
             print('\n Adding new task: "New task" with status Complete to Charlie')
             add_task(conn, "New task", "New task description", 6, 3)

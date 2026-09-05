@@ -1,7 +1,7 @@
 from faker import Faker
 from psycopg2 import Error
 
-from db import create_connection
+from .db import create_connection
 
 
 def create_tables(conn):
