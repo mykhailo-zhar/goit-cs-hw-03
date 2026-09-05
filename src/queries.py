@@ -20,7 +20,7 @@ def select_all_tasks_of_user(conn, user_id):
         execute_query(
             conn,
             """
-SELECT * FROM users WHERE id = %s
+SELECT * FROM tasks WHERE user_id = %s
     """,
             (user_id,),
         ),
@@ -97,29 +97,31 @@ def select_incomplete_tasks(conn):
             """
 SELECT * FROM tasks WHERE 
     status_id NOT IN
-             (SELECT id from status WHERE name = 'done');
+             (SELECT id from status WHERE name = 'completed');
     """,
         ),
     )
+    print()
 
 
 # Видалити конкретне завдання. Використайте DELETE для видалення завдання за його id.
-def remove_user(conn, id):
+def remove_task(conn, task_id):
     cur = conn.cursor()
     cur.execute(
         """
-DELETE FROM users 
+DELETE FROM tasks 
 WHERE 
 id = %s
 RETURNING id;
     """,
-        (id,),
+        (task_id,),
     )
     returned_row = cur.fetchone()
     if returned_row:
-        print(f"Removed user with id: {returned_row[0]} \n")
+        print(f"Removed task with id: {returned_row[0]} \n")
     else:
-        print("User already has been removed\n")
+        print("Task does not exist\n")
+    print()
 
 
 # Знайти користувачів з певною електронною поштою. Використайте SELECT із умовою LIKE для фільтрації за електронною поштою.
@@ -134,6 +136,7 @@ SELECT * FROM users WHERE
     """,
         ),
     )
+    print()
 
 
 # Оновити ім'я користувача. Змініть ім'я користувача за допомогою UPDATE.
@@ -166,6 +169,7 @@ GROUP BY s.name
     """,
         ),
     )
+    print()
 
 
 # Отримати завдання, які призначені користувачам з певною доменною частиною електронної пошти. Використайте SELECT з умовою LIKE в поєднанні з JOIN, щоб вибрати завдання, призначені користувачам, чия електронна пошта містить певний домен (наприклад, '%@example.com').
@@ -180,6 +184,7 @@ SELECT t.id, t.title, t.description, u.email FROM tasks as t JOIN users as u ON 
     """,
         ),
     )
+    print()
 
 
 # Отримати список завдань, що не мають опису. Виберіть завдання, у яких відсутній опис.
@@ -194,6 +199,7 @@ SELECT * FROM tasks WHERE
     """,
         ),
     )
+    print()
 
 
 # Вибрати користувачів та їхні завдання, які є у статусі 'in progress'. Використайте INNER JOIN для отримання списку користувачів та їхніх завдань із певним статусом.
@@ -212,6 +218,7 @@ WHERE
     """,
         ),
     )
+    print()
 
 
 # Отримати користувачів та кількість їхніх завдань. Використайте LEFT JOIN та GROUP BY для вибору користувачів та підрахунку їхніх завдань.
@@ -221,26 +228,27 @@ def count_user_tasks(conn):
         execute_query(
             conn,
             """
-SELECT u.*, COUNT(*) 
+SELECT u.id || ' ' || u.fullname || '(' || u.email || ')', COUNT(t.id) 
 FROM users as u 
 LEFT JOIN tasks as t ON t.user_id = u.id
 GROUP BY u.id;
     """,
         ),
     )
+    print()
 
 
 if __name__ == "__main__":
     with create_connection() as conn:
         if conn is not None:
             select_all_tasks_of_user(conn, 1)
-            select_all_tasks_with_status(conn, "todo")
-            update_task_status(conn, 5, 2)
+            select_all_tasks_with_status(conn, "new")
+            update_task_status(conn, 6, 2)
             users_without_tasks(conn)
             print('\n Adding new task: "New task" with status Done to Charlie')
             add_task(conn, "New task", "New task description", 6, 3)
             select_incomplete_tasks(conn)
-            remove_user(conn, 5)
+            remove_task(conn, 5)
             select_users_with_example_com(conn)
             update_username(conn, 4, "Lessley")
             count_statuses(conn)
