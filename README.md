@@ -20,10 +20,9 @@ uv sync
 docker compose up -d
 ```
 
-5. Seed PostgreSQL, then run both demos:
+5. Run both demos:
 
 ```bash
-python src/seed.py
 python main.py
 ```
 
